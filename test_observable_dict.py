@@ -34,9 +34,6 @@ class TestObservableDict(unittest.TestCase):
         o = ObservableDict({'key': 'value'}, observers=[updates.append], pre_notify=True)
         self.assertEqual([o.Update(o, 'key', None, 'value')], updates)
 
-        # TODO: Test:
-        #     - constructor broadcasts all initial updates to provided observers
-
 
 if __name__ == '__main__':
     unittest.main()

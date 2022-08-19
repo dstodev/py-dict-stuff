@@ -8,7 +8,7 @@ class AttributeDict(dict):
         value = super().setdefault(key, AttributeDict())
         if self.is_convertible(value):
             value = AttributeDict(value)
-            super().__setattr__(key, value)
+            super().__setitem__(key, value)
         return value
 
     @staticmethod
@@ -18,6 +18,6 @@ class AttributeDict(dict):
     def __setattr__(self, key, value):
         if self.is_convertible(value):
             value = AttributeDict(value)
-        super().__setattr__(key, value)
+        super().__setitem__(key, value)
 
     __delattr__ = dict.__delitem__
