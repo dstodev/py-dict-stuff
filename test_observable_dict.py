@@ -1,24 +1,41 @@
 import unittest
 
-from observable_dict import ObservableDict, DictUpdate
+from observable_dict import ObservableDict
 
 
-class TestObservableMapping(unittest.TestCase):
+class TestObservableDict(unittest.TestCase):
+    def test_construct(self):
+        o = ObservableDict()
+
+    def test_construct_args(self):
+        o = ObservableDict({'key': 'value'})
+        self.assertEqual({'key': 'value'}, o)
+
+    def test_construct_args_observers(self):
+        observers = []
+        o = ObservableDict({'key': 'value'}, key2='value2', observers=observers)
+        self.assertEqual({'key': 'value', 'key2': 'value2'}, o)
+
     def test_notify(self):
         updates = []
-        def callback(update: DictUpdate): updates.append(update)
         o = ObservableDict()
-        o.observers.append(callback)
+        o.observers.append(updates.append)
         self.assertEqual([], updates)
         o['key'] = 'value'
-        self.assertEqual([DictUpdate(o, 'key', None, 'value')], updates)
+        self.assertEqual([o.Update(o, 'key', None, 'value')], updates)
+
+    def test_notify_initial_observers(self):
+        updates = []
+        o = ObservableDict({'key': 'value'}, observers=[updates.append])
+        self.assertEqual([], updates)
+
+    def test_notify_initial_observers_pre_notify(self):
+        updates = []
+        o = ObservableDict({'key': 'value'}, observers=[updates.append], pre_notify=True)
+        self.assertEqual([o.Update(o, 'key', None, 'value')], updates)
 
         # TODO: Test:
-        #   construct with args
-        #   construct with args and constructor broadcasts all initial updates to provided observers
-        #       This behavior is useful so that the initial object state does not need to be interpreted
-        #       separately from update notifications--instead, only update notifications need to be
-        #       interpreted, and that interpreter can be primed with initial DictUpdate instances.
+        #     - constructor broadcasts all initial updates to provided observers
 
 
 if __name__ == '__main__':
