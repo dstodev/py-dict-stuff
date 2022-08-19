@@ -13,6 +13,7 @@ class AttributeDict(dict):
 
     @staticmethod
     def is_convertible(obj):
+        # TODO: Expand list of convertible types?
         return type(obj) is dict
 
     def __setattr__(self, key, value):
