@@ -38,6 +38,12 @@ class TestAttributeDict(unittest.TestCase):
         o.outer.inner.key = 'value'
         self.assertEqual('value', o.outer.inner.key)
 
+    def test_converted_nested_type(self):
+        o = AttributeDict({'outer': {
+            'inner': {}
+        }})
+        self.assertIs(AttributeDict, type(o.inner))
+
 
 if __name__ == '__main__':
     unittest.main()

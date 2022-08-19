@@ -28,7 +28,7 @@ class ObservableDict(dict):
 
         super().__init__(*args, **kwargs)
 
-        self.observers = observers
+        self.__dict__['observers'] = observers
 
         if pre_notify_observers:
             for key, value in self.items():
@@ -42,11 +42,12 @@ class ObservableDict(dict):
         self.update_observers(update)
 
     def update_observers(self, update):
-        for observer in self.observers:
+        for observer in self.__dict__['observers']:
             try:
                 # Call observer passing the update
                 observer(update)
             except Exception as e:
+                # TODO: Add specific error handling
                 print(e)
 
     @dataclasses.dataclass

@@ -5,9 +5,9 @@ class AttributeDict(dict):
     def __getattr__(self, *args):
         assert len(args) == 1
         key = args[0]
-        value = super().setdefault(key, AttributeDict())
+        value = super().setdefault(key, self.__class__())
         if self.is_convertible(value):
-            value = AttributeDict(value)
+            value = self.__class__(value)
             super().__setitem__(key, value)
         return value
 
@@ -17,7 +17,7 @@ class AttributeDict(dict):
 
     def __setattr__(self, key, value):
         if self.is_convertible(value):
-            value = AttributeDict(value)
+            value = self.__class__(value)
         super().__setitem__(key, value)
 
     __delattr__ = dict.__delitem__
