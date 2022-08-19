@@ -10,7 +10,7 @@ class TestObservableAttributeDict(unittest.TestCase):
     def test_notify(self):
         updates = []
         o = ObservableAttributeDict()
-        o.observers.append(updates.append)
+        o.add_observers(updates.append)
         self.assertEqual([], updates)
         o.key = 'value'
         self.assertEqual([o.Update(o, 'key', None, 'value')], updates)
