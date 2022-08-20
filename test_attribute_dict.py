@@ -44,6 +44,29 @@ class TestAttributeDict(unittest.TestCase):
         }})
         self.assertIs(AttributeDict, type(o.inner))
 
+    def test_converted_adhoc_type(self):
+        o = AttributeDict()
+        o.outer.key = 'value'
+        self.assertIs(AttributeDict, type(o.outer))
+
+    def test_converted_dict_type(self):
+        o = AttributeDict()
+        o.outer = {}
+        self.assertIs(AttributeDict, type(o.outer))
+
+    def test_conversion_with_setitem(self):
+        o = AttributeDict()
+        o['outer'] = {}
+        self.assertIs(AttributeDict, type(o.outer))
+
+    def test_conversion_type_uses_child_type(self):
+        class Child(AttributeDict):
+            pass
+
+        o = Child()
+        o.outer = {}
+        self.assertIs(Child, type(o.outer))
+
 
 if __name__ == '__main__':
     unittest.main()
