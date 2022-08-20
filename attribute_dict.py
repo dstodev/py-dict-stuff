@@ -5,7 +5,8 @@ class AttributeDict(dict):
     def __getattr__(self, *args):
         assert len(args) == 1
         key = args[0]
-        value = super().setdefault(key, self.__class__())
+        # TODO: Split adhoc behavior to separate mixin?
+        value = super().get(key, {})
         if self.is_convertible(value):
             value = self.__class__(value)
             super().__setitem__(key, value)

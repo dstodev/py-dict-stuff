@@ -26,6 +26,19 @@ class TestObservableAttributeDict(unittest.TestCase):
         }})
         self.assertIs(ObservableAttributeDict, type(o.inner))
 
+    def test_notify_adhoc(self):
+        updates = []
+        o = ObservableAttributeDict(observers=[updates.append])
+        o.outer.key = 'value'
+        self.assertEqual([o.Update(o, 'outer', None, {'key': 'value'})], updates)
+
+    def test_adhoc_observer(self):
+        updates = []
+        o = ObservableAttributeDict()
+        o.outer.add_observers(updates.append)
+        o.outer.key = 'value'
+        self.assertEqual([o.Update(o.outer, 'key', None, 'value')], updates)
+
 
 if __name__ == '__main__':
     unittest.main()
