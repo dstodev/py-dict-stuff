@@ -22,22 +22,26 @@ class TestObservableAttributeDict(unittest.TestCase):
 
     def test_converted_type(self):
         o = ObservableAttributeDict({'outer': {
-            'inner': 'key'
-        }})
-        self.assertIs(ObservableAttributeDict, type(o.inner))
+            'key': 'value'
+        }}, convert_dict=True)
+        self.assertIs(ObservableAttributeDict, type(o.outer))
 
+    @unittest.skip('Needs to be moved to new ObservableAdhocAttributeDict')
     def test_notify_adhoc(self):
         updates = []
         o = ObservableAttributeDict(observers=[updates.append])
+        self.assertListEqual([], updates)
         o.outer.key = 'value'
-        self.assertEqual([o.Update(o, 'outer', None, {'key': 'value'})], updates)
+        self.assertListEqual([o.Update(o, 'outer', None, {'key': 'value'})], updates)
 
+    @unittest.skip('Needs to be moved to new ObservableAdhocAttributeDict')
     def test_adhoc_observer(self):
         updates = []
         o = ObservableAttributeDict()
         o.outer.add_observers(updates.append)
+        self.assertListEqual([], updates)
         o.outer.key = 'value'
-        self.assertEqual([o.Update(o.outer, 'key', None, 'value')], updates)
+        self.assertListEqual([o.Update(o.outer, 'key', None, 'value')], updates)
 
 
 if __name__ == '__main__':

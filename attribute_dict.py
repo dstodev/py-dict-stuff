@@ -1,25 +1,28 @@
+from typing import Any
+
+
 class AttributeDict(dict):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
+        convert_dict = kwargs.pop('convert_dict', False)
+
         super().__init__(*args, **kwargs)
 
-    def __getattr__(self, *args):
-        assert len(args) == 1
-        key = args[0]
-        # TODO: Split adhoc behavior to separate mixin?
-        value = super().get(key, {})
-        if self.is_convertible(value):
-            value = self.__class__(value)
-            super().__setitem__(key, value)
-        return value
+        if convert_dict:
+            for key, value in self.items():
+                super().__setitem__(key, self.convert_dict(value))
 
-    @staticmethod
-    def is_convertible(obj):
-        # TODO: Expand list of convertible types?
-        return type(obj) is dict
+    @classmethod
+    def convert_dict(cls, value: Any) -> Any:
+        if type(value) is dict:
+            return cls(value)
+        else:
+            return value
 
-    def __setattr__(self, key, value):
-        if self.is_convertible(value):
-            value = self.__class__(value)
-        super().__setitem__(key, value)
+    def __getattr__(self, name: str) -> Any:
+        return super().get(name)
 
-    __delattr__ = dict.__delitem__
+    def __setattr__(self, name: str, value: Any) -> None:
+        super().__setitem__(name, value)
+
+    def __delattr__(self, name: str) -> None:
+        super().__delitem__(name)
