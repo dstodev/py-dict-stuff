@@ -14,6 +14,8 @@ class AttributeDict(dict):
     @classmethod
     def convert_dict(cls, value: Any) -> Any:
         if type(value) is dict:
+            for key, inner_value in value.items():
+                value[key] = cls.convert_dict(inner_value)
             return cls(value)
         else:
             return value
