@@ -16,24 +16,17 @@ class TestAttributeDict(unittest.TestCase):
         o.key = 'value'
         self.assertEqual('value', o.key)
 
-    def test_nested_dict_value(self):
-        o = AttributeDict({'outer': {
-            'key': 'value'
-        }})
-        self.assertEqual('value', o.outer['key'])
-        self.assertIs(dict, type(o.outer))
-
     def test_nested_dict_value_conversion(self):
         o = AttributeDict({'outer': {
             'key': 'value'
-        }}, convert_dict=True)
+        }})
         self.assertEqual('value', o.outer.key)
         self.assertIs(AttributeDict, type(o.outer))
 
     def test_twice_nested_dict_value_conversion(self):
         o = AttributeDict({'outer': {
             'inner': {'key': 'value'}
-        }}, convert_dict=True)
+        }})
         self.assertEqual('value', o.outer.inner.key)
         self.assertIs(AttributeDict, type(o.outer))
         self.assertIs(AttributeDict, type(o.outer.inner))

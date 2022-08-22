@@ -1,7 +1,10 @@
 import dataclasses
 
+from adhoc_dict import AdhocDict
+from convert_dict import ConvertDict
 
-class ObservableDict(dict):
+
+class ObservableDict(AdhocDict, ConvertDict):
     def __init__(self, *args, **kwargs):
         """Dictionary which updates observers about changes.
 
@@ -25,24 +28,24 @@ class ObservableDict(dict):
         """
         observers = kwargs.pop('observers', [])
         pre_notify_observers = kwargs.pop('pre_notify', False)
-
         super().__init__(*args, **kwargs)
-
-        self.__dict__['__observers'] = observers
+        super().__setitem__('__observers', observers)
 
         if pre_notify_observers:
-            for key, value in self.items():
+            for key, value in super().items():
+                if key == '__observers':
+                    continue
                 update = self.Update(self, key, None, value)
                 self.update_observers(update)
 
     def __setitem__(self, key, value):
-        old_value = super().get(key)
+        old_value = dict.get(self, key, None)
         super().__setitem__(key, value)
         update = self.Update(self, key, old_value, value)
         self.update_observers(update)
 
     def update_observers(self, update):
-        for observer in self.__dict__['__observers']:
+        for observer in super().get('__observers'):
             try:
                 # Call observer passing the update
                 observer(update)
@@ -52,7 +55,7 @@ class ObservableDict(dict):
 
     def add_observers(self, *observers):
         # TODO: Validate observers?
-        self.__dict__['__observers'].extend(observers)
+        super().get('__observers').extend(observers)
 
     @dataclasses.dataclass
     class Update:

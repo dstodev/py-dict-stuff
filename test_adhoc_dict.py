@@ -3,7 +3,7 @@ import unittest
 from adhoc_dict import AdhocDict
 
 
-class TestAttributeDict(unittest.TestCase):
+class TestAdhocDict(unittest.TestCase):
     def test_set_adhoc_key(self):
         o = AdhocDict()
         self.assertDictEqual({}, o)
